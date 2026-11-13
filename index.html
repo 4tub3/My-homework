@@ -1,0 +1,462 @@
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Homework | สมุดจดงาน</title>
+<style>
+:root {
+  --green:#39865b;
+  --light:#eaf6ee;
+  --bg:#f5f9f5;
+  --text:#263b2e;
+  --muted:#819087;
+  --white:#fff;
+}
+* {box-sizing:border-box}
+body {
+  margin:0;
+  font-family:Arial,"Noto Sans Thai",sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+header {
+  background:linear-gradient(135deg,#347c53,#75b98a);
+  color:white;
+  padding:28px 20px 34px;
+  border-radius:0 0 26px 26px;
+}
+.header-inner,.container {
+  max-width:760px;
+  margin:auto;
+}
+header h1 {margin:0;font-size:27px}
+header p {margin:8px 0 0;opacity:.9}
+.container {padding:18px 15px 40px}
+.date {color:var(--muted);font-size:14px;margin-bottom:15px}
+.stats {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-bottom:20px;
+}
+.stat {
+  background:white;
+  padding:15px 8px;
+  border-radius:16px;
+  text-align:center;
+  box-shadow:0 3px 12px #244c3010;
+}
+.stat strong {display:block;font-size:25px;color:var(--green)}
+.stat span {font-size:12px;color:var(--muted)}
+.panel {
+  background:white;
+  padding:18px;
+  border-radius:18px;
+  margin-bottom:16px;
+  box-shadow:0 3px 12px #244c300b;
+}
+h2 {font-size:18px;margin:0 0 15px}
+label {
+  display:block;
+  font-size:13px;
+  font-weight:bold;
+  margin:12px 0 6px;
+}
+input,select,textarea {
+  width:100%;
+  padding:12px;
+  border:1px solid #dce8df;
+  border-radius:10px;
+  background:#fbfdfb;
+  color:var(--text);
+  font:inherit;
+  outline:none;
+}
+input:focus,select:focus,textarea:focus {
+  border-color:var(--green);
+}
+textarea {resize:vertical;min-height:75px}
+.two {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+button {
+  border:0;
+  border-radius:11px;
+  padding:12px 16px;
+  font:inherit;
+  font-weight:bold;
+  cursor:pointer;
+}
+.primary {
+  width:100%;
+  margin-top:16px;
+  background:var(--green);
+  color:white;
+}
+.filters {
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  padding-bottom:12px;
+}
+.filters button {
+  white-space:nowrap;
+  background:#e7f1e9;
+  color:#477354;
+  font-size:13px;
+}
+.filters button.active {
+  background:var(--green);
+  color:white;
+}
+.task {
+  background:white;
+  border-radius:15px;
+  padding:15px;
+  margin-bottom:11px;
+  border-left:4px solid #7ab58b;
+  box-shadow:0 3px 12px #244c300b;
+}
+.task.done {opacity:.65;border-left-color:#aebbb1}
+.task-top {
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+}
+.task h3 {margin:0 0 7px;font-size:16px}
+.subject {
+  display:inline-block;
+  color:#397b50;
+  background:#eaf6ee;
+  border-radius:20px;
+  padding:4px 9px;
+  font-size:11px;
+  margin-bottom:8px;
+}
+.task p {
+  font-size:13px;
+  color:#718078;
+  margin:5px 0;
+  white-space:pre-wrap;
+}
+.due {font-size:12px;color:#8b7651}
+.actions {
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  margin-top:12px;
+}
+.actions button {font-size:12px;padding:8px 10px}
+.complete {background:#e5f4e9;color:#347c53}
+.edit {background:#edf1f5;color:#536779}
+.delete {background:#fff0ed;color:#bb5c50}
+.empty {
+  text-align:center;
+  color:#94a198;
+  padding:30px 10px;
+  font-size:14px;
+}
+footer {
+  text-align:center;
+  color:#9aa89e;
+  font-size:12px;
+  padding:15px;
+}
+@media(max-width:420px) {
+  .two {grid-template-columns:1fr}
+  header h1 {font-size:24px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <h1>📚 My Homework</h1>
+    <p>สมุดจดงานที่ครูสั่งของฉัน</p>
+  </div>
+</header>
+
+<main class="container">
+  <div class="date" id="today"></div>
+
+  <section class="stats">
+    <div class="stat">
+      <strong id="total">0</strong>
+      <span>งานทั้งหมด</span>
+    </div>
+    <div class="stat">
+      <strong id="pending">0</strong>
+      <span>ยังไม่เสร็จ</span>
+    </div>
+    <div class="stat">
+      <strong id="finished">0</strong>
+      <span>เสร็จแล้ว</span>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2 id="formTitle">✏️ เพิ่มงานใหม่</h2>
+
+    <form id="homeworkForm">
+      <input type="hidden" id="editId">
+
+      <label for="subject">วิชา</label>
+      <input id="subject" placeholder="เช่น คณิตศาสตร์" required>
+
+      <label for="title">ชื่องาน / สิ่งที่ครูสั่ง</label>
+      <input id="title" placeholder="เช่น ทำแบบฝึกหัดหน้า 25" required>
+
+      <label for="detail">รายละเอียดเพิ่มเติม</label>
+      <textarea id="detail" placeholder="เช่น ทำข้อ 1-10 ส่งในสมุด"></textarea>
+
+      <div class="two">
+        <div>
+          <label for="assigned">วันที่ครูสั่ง</label>
+          <input type="date" id="assigned" required>
+        </div>
+        <div>
+          <label for="due">วันกำหนดส่ง</label>
+          <input type="date" id="due">
+        </div>
+      </div>
+
+      <button class="primary" type="submit" id="saveBtn">
+        + บันทึกงาน
+      </button>
+      <button type="button" id="cancelBtn"
+        style="display:none;width:100%;margin-top:8px;background:#eee;color:#555">
+        ยกเลิกการแก้ไข
+      </button>
+    </form>
+  </section>
+
+  <section>
+    <h2>📝 รายการงานของฉัน</h2>
+
+    <div class="filters">
+      <button class="active" data-filter="all">ทั้งหมด</button>
+      <button data-filter="pending">ยังไม่เสร็จ</button>
+      <button data-filter="done">เสร็จแล้ว</button>
+    </div>
+
+    <div id="taskList"></div>
+  </section>
+
+  <footer>My Homework • จัดการงานให้เป็นระเบียบ 🌱</footer>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+
+let tasks = [];
+let currentFilter = "all";
+
+try {
+  tasks = JSON.parse(
+    localStorage.getItem("myHomework") || "[]"
+  );
+  if (!Array.isArray(tasks)) tasks = [];
+} catch {
+  tasks = [];
+}
+
+function save() {
+  localStorage.setItem("myHomework", JSON.stringify(tasks));
+  render();
+}
+
+function todayString() {
+  const d = new Date();
+  const local = new Date(
+    d.getTime() - d.getTimezoneOffset() * 60000
+  );
+  return local.toISOString().slice(0,10);
+}
+
+function showDate() {
+  $("today").textContent =
+    "📅 วันนี้ " + new Date().toLocaleDateString("th-TH", {
+      weekday:"long",
+      year:"numeric",
+      month:"long",
+      day:"numeric"
+    });
+}
+
+function formatDate(date) {
+  if (!date) return "ไม่ได้กำหนด";
+  const d = new Date(date + "T00:00:00");
+  return d.toLocaleDateString("th-TH", {
+    day:"numeric",
+    month:"short",
+    year:"numeric"
+  });
+}
+
+$("assigned").value = todayString();
+
+$("homeworkForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  const id = $("editId").value;
+
+  const task = {
+    id: id || String(Date.now()),
+    subject: $("subject").value.trim(),
+    title: $("title").value.trim(),
+    detail: $("detail").value.trim(),
+    assigned: $("assigned").value,
+    due: $("due").value,
+    done: id
+      ? !!tasks.find(t => t.id === id)?.done
+      : false
+  };
+
+  if (id) {
+    const index = tasks.findIndex(t => t.id === id);
+    if (index !== -1) tasks[index] = task;
+  } else {
+    tasks.unshift(task);
+  }
+
+  resetForm();
+  save();
+});
+
+function resetForm() {
+  $("homeworkForm").reset();
+  $("editId").value = "";
+  $("assigned").value = todayString();
+  $("formTitle").textContent = "✏️ เพิ่มงานใหม่";
+  $("saveBtn").textContent = "+ บันทึกงาน";
+  $("cancelBtn").style.display = "none";
+}
+
+$("cancelBtn").addEventListener("click", resetForm);
+
+function editTask(id) {
+  const t = tasks.find(x => x.id === id);
+  if (!t) return;
+
+  $("editId").value = t.id;
+  $("subject").value = t.subject;
+  $("title").value = t.title;
+  $("detail").value = t.detail;
+  $("assigned").value = t.assigned;
+  $("due").value = t.due;
+
+  $("formTitle").textContent = "🖊️ แก้ไขงาน";
+  $("saveBtn").textContent = "บันทึกการแก้ไข";
+  $("cancelBtn").style.display = "block";
+
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function toggleTask(id) {
+  const t = tasks.find(x => x.id === id);
+  if (!t) return;
+  t.done = !t.done;
+  save();
+}
+
+function deleteTask(id) {
+  if (!confirm("ต้องการลบงานนี้ใช่ไหม?")) return;
+  tasks = tasks.filter(t => t.id !== id);
+  save();
+}
+
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, c => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#39;"
+  })[c]);
+}
+
+function render() {
+  $("total").textContent = tasks.length;
+  $("pending").textContent =
+    tasks.filter(t => !t.done).length;
+  $("finished").textContent =
+    tasks.filter(t => t.done).length;
+
+  const filtered = tasks.filter(t => {
+    if (currentFilter === "pending") return !t.done;
+    if (currentFilter === "done") return t.done;
+    return true;
+  }).sort((a,b) => {
+    if (a.done !== b.done) return a.done ? 1 : -1;
+    if (!a.due) return 1;
+    if (!b.due) return -1;
+    return a.due.localeCompare(b.due);
+  });
+
+  if (filtered.length === 0) {
+    $("taskList").innerHTML =
+      '<div class="empty">🌱 ยังไม่มีรายการงานในหมวดนี้</div>';
+    return;
+  }
+
+  $("taskList").innerHTML = filtered.map(t => `
+    <article class="task ${t.done ? "done" : ""}">
+      <div class="task-top">
+        <div>
+          <span class="subject">${escapeHTML(t.subject)}</span>
+          <h3>${escapeHTML(t.title)}</h3>
+        </div>
+        <span>${t.done ? "✅" : "📌"}</span>
+      </div>
+
+      ${t.detail
+        ? `<p>${escapeHTML(t.detail)}</p>`
+        : ""}
+
+      <p>📅 วันที่สั่ง: ${formatDate(t.assigned)}</p>
+      <div class="due">⏰ กำหนดส่ง: ${formatDate(t.due)}</div>
+
+      <div class="actions">
+        <button class="complete"
+          onclick="toggleTask('${t.id}')">
+          ${t.done ? "↩ ทำอีกครั้ง" : "✓ เสร็จแล้ว"}
+        </button>
+
+        <button class="edit"
+          onclick="editTask('${t.id}')">
+          ✎ แก้ไข
+        </button>
+
+        <button class="delete"
+          onclick="deleteTask('${t.id}')">
+          🗑 ลบ
+        </button>
+      </div>
+    </article>
+  `).join("");
+}
+
+document.querySelectorAll(".filters button")
+.forEach(button => {
+  button.addEventListener("click", () => {
+    currentFilter = button.dataset.filter;
+
+    document.querySelectorAll(".filters button")
+    .forEach(b => b.classList.remove("active"));
+
+    button.classList.add("active");
+    render();
+  });
+});
+
+showDate();
+render();
+</script>
+
+</body>
+</html>
