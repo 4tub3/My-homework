@@ -1,3 +1,4 @@
+
 importScripts(
   "https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"
 );
@@ -17,3 +18,27 @@ firebase.initializeApp({
 });
 
 const messaging = firebase.messaging();
+
+messaging.onBackgroundMessage((payload) => {
+  const title =
+    payload.notification?.title || "My Homework";
+
+  const options = {
+    body:
+      payload.notification?.body || "มีการแจ้งเตือนงานของคุณ",
+    icon: "./icon-192.png",
+    data: {
+      url: "./"
+    }
+  };
+
+  self.registration.showNotification(title, options);
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+
+  event.waitUntil(
+    clients.openWindow("./")
+  );
+});
