@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -220,139 +219,148 @@ footer {
 
 <main class="container">
 
-  <!-- LOGIN -->
-  <section id="loginView" class="panel">
-    <h2>🔐 เข้าสู่ระบบ My Homework</h2>
+<section id="loginView" class="panel">
+  <h2>🔐 เข้าสู่ระบบ My Homework</h2>
+  <p style="font-size:13px;color:#819087">
+    ใช้อีเมลและรหัสผ่านของตัวเอง
+  </p>
+
+  <form id="loginForm">
+    <label for="email">อีเมล</label>
+    <input id="email" type="email"
+      placeholder="example@gmail.com" required>
+
+    <label for="password">รหัสผ่าน</label>
+    <input id="password" type="password"
+      placeholder="รหัสผ่านอย่างน้อย 6 ตัว" required>
+
+    <button class="primary" id="loginBtn" type="submit">
+      เข้าสู่ระบบ
+    </button>
+  </form>
+
+  <button class="secondary" id="registerBtn"
+    style="width:100%;margin-top:10px">
+    สมัครสมาชิกใหม่
+  </button>
+
+  <button class="secondary" id="resetBtn"
+    style="width:100%;margin-top:10px">
+    ลืมรหัสผ่าน?
+  </button>
+
+  <div id="authMessage" class="message hidden"></div>
+</section>
+
+<section id="appView" class="hidden">
+
+  <section class="panel account">
+    <div>
+      <strong>👤 บัญชีของฉัน</strong>
+      <div id="userEmail"
+        style="color:#819087;margin-top:5px"></div>
+    </div>
+    <button id="logoutBtn" class="danger">
+      ออกจากระบบ
+    </button>
+  </section>
+
+  <!-- PUSH NOTIFICATION -->
+  <section class="panel">
+    <h2>🔔 การแจ้งเตือนการบ้าน</h2>
     <p style="font-size:13px;color:#819087">
-      ใช้อีเมลและรหัสผ่านของตัวเอง
+      รับการแจ้งเตือนก่อนวันส่ง 1 วัน และในวันกำหนดส่ง เวลา 17:00 น.
     </p>
+    <button id="enablePushBtn" class="primary" type="button">
+      เปิดใช้งานการแจ้งเตือน
+    </button>
+    <div id="pushMessage" class="message hidden"></div>
+  </section>
 
-    <form id="loginForm">
-      <label for="email">อีเมล</label>
-      <input id="email" type="email"
-        placeholder="example@gmail.com" required>
+  <div id="today" class="date"></div>
 
-      <label for="password">รหัสผ่าน</label>
-      <input id="password" type="password"
-        placeholder="รหัสผ่านอย่างน้อย 6 ตัว" required>
+  <section class="stats">
+    <div class="stat">
+      <strong id="total">0</strong>
+      <span>งานทั้งหมด</span>
+    </div>
+    <div class="stat">
+      <strong id="pending">0</strong>
+      <span>ยังไม่เสร็จ</span>
+    </div>
+    <div class="stat">
+      <strong id="finished">0</strong>
+      <span>เสร็จแล้ว</span>
+    </div>
+  </section>
 
-      <button class="primary" id="loginBtn" type="submit">
-        เข้าสู่ระบบ
+  <section class="panel">
+    <h2 id="formTitle">✏️ เพิ่มงานใหม่</h2>
+
+    <form id="homeworkForm">
+      <input type="hidden" id="editId">
+
+      <label for="subject">วิชา</label>
+      <input id="subject"
+        placeholder="เช่น คณิตศาสตร์" required>
+
+      <label for="title">ชื่องาน / สิ่งที่ครูสั่ง</label>
+      <input id="title"
+        placeholder="เช่น ทำแบบฝึกหัดหน้า 25" required>
+
+      <label for="detail">รายละเอียดเพิ่มเติม</label>
+      <textarea id="detail"
+        placeholder="เช่น ทำข้อ 1-10 ส่งในสมุด"></textarea>
+
+      <div class="two">
+        <div>
+          <label for="assigned">วันที่ครูสั่ง</label>
+          <input type="date" id="assigned" required>
+        </div>
+        <div>
+          <label for="due">วันกำหนดส่ง</label>
+          <input type="date" id="due">
+        </div>
+      </div>
+
+      <button class="primary" type="submit" id="saveBtn">
+        + บันทึกงาน
+      </button>
+
+      <button type="button" id="cancelBtn"
+        style="display:none;width:100%;margin-top:8px;background:#eee;color:#555">
+        ยกเลิกการแก้ไข
       </button>
     </form>
-
-    <button class="secondary" id="registerBtn"
-      style="width:100%;margin-top:10px">
-      สมัครสมาชิกใหม่
-    </button>
-
-    <button class="secondary" id="resetBtn"
-      style="width:100%;margin-top:10px">
-      ลืมรหัสผ่าน?
-    </button>
-
-    <div id="authMessage" class="message hidden"></div>
   </section>
 
-  <!-- APP -->
-  <section id="appView" class="hidden">
+  <section>
+    <h2>📝 รายการงานของฉัน</h2>
 
-    <section class="panel account">
-      <div>
-        <strong>👤 บัญชีของฉัน</strong>
-        <div id="userEmail"
-          style="color:#819087;margin-top:5px"></div>
-      </div>
-      <button id="logoutBtn" class="danger">
-        ออกจากระบบ
-      </button>
-    </section>
+    <div class="filters">
+      <button class="active" data-filter="all">ทั้งหมด</button>
+      <button data-filter="pending">ยังไม่เสร็จ</button>
+      <button data-filter="done">เสร็จแล้ว</button>
+    </div>
 
-    <div id="today" class="date"></div>
-
-    <section class="stats">
-      <div class="stat">
-        <strong id="total">0</strong>
-        <span>งานทั้งหมด</span>
-      </div>
-      <div class="stat">
-        <strong id="pending">0</strong>
-        <span>ยังไม่เสร็จ</span>
-      </div>
-      <div class="stat">
-        <strong id="finished">0</strong>
-        <span>เสร็จแล้ว</span>
-      </div>
-    </section>
-
-    <section class="panel">
-      <h2 id="formTitle">✏️ เพิ่มงานใหม่</h2>
-
-      <form id="homeworkForm">
-        <input type="hidden" id="editId">
-
-        <label for="subject">วิชา</label>
-        <input id="subject"
-          placeholder="เช่น คณิตศาสตร์" required>
-
-        <label for="title">ชื่องาน / สิ่งที่ครูสั่ง</label>
-        <input id="title"
-          placeholder="เช่น ทำแบบฝึกหัดหน้า 25" required>
-
-        <label for="detail">รายละเอียดเพิ่มเติม</label>
-        <textarea id="detail"
-          placeholder="เช่น ทำข้อ 1-10 ส่งในสมุด"></textarea>
-
-        <div class="two">
-          <div>
-            <label for="assigned">วันที่ครูสั่ง</label>
-            <input type="date" id="assigned" required>
-          </div>
-          <div>
-            <label for="due">วันกำหนดส่ง</label>
-            <input type="date" id="due">
-          </div>
-        </div>
-
-        <button class="primary" type="submit" id="saveBtn">
-          + บันทึกงาน
-        </button>
-
-        <button type="button" id="cancelBtn"
-          style="display:none;width:100%;margin-top:8px;background:#eee;color:#555">
-          ยกเลิกการแก้ไข
-        </button>
-      </form>
-    </section>
-
-    <section>
-      <h2>📝 รายการงานของฉัน</h2>
-
-      <div class="filters">
-        <button class="active" data-filter="all">ทั้งหมด</button>
-        <button data-filter="pending">ยังไม่เสร็จ</button>
-        <button data-filter="done">เสร็จแล้ว</button>
-      </div>
-
-      <div id="taskList">
-        <div class="empty">กำลังโหลดข้อมูล...</div>
-      </div>
-    </section>
-
+    <div id="taskList">
+      <div class="empty">กำลังโหลดข้อมูล...</div>
+    </div>
   </section>
 
-  <footer>My Homework • จัดการงานให้เป็นระเบียบ 🌱</footer>
+</section>
+
+<footer>My Homework • จัดการงานให้เป็นระเบียบ 🌱</footer>
 </main>
 
-<!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-messaging-compat.js"></script>
 
 <script>
 const $ = id => document.getElementById(id);
 
-/* Firebase Configuration */
 const firebaseConfig = {
   apiKey: "AIzaSyAoRGRHb0qZPvCfZUCFK8op0p0DH-UXb6I",
   authDomain: "my-homework-5919f.firebaseapp.com",
@@ -373,6 +381,12 @@ let tasks = [];
 let currentFilter = "all";
 let unsubscribeTasks = null;
 let busy = false;
+let messaging = null;
+let pushToken = null;
+let pushRegistration = null;
+
+// ใส่ VAPID PUBLIC KEY หลังสร้างจาก Firebase
+const VAPID_KEY = "ใส่_PUBLIC_VAPID_KEY_ตรงนี้";
 
 function showMessage(id, message, error = false) {
   const el = $(id);
@@ -392,7 +406,15 @@ function getTasksRef() {
     .collection("tasks");
 }
 
-/* วันที่ */
+function getTokenRef(token, user = currentUser) {
+  if (!user) throw new Error("กรุณาเข้าสู่ระบบ");
+
+  return db.collection("users")
+    .doc(user.uid)
+    .collection("notificationTokens")
+    .doc(encodeURIComponent(token));
+}
+
 function todayString() {
   const d = new Date();
   const local = new Date(
@@ -421,7 +443,21 @@ function formatDate(date) {
   });
 }
 
-/* สมัครสมาชิก */
+function authError(e) {
+  const messages = {
+    "auth/email-already-in-use":"อีเมลนี้สมัครสมาชิกแล้ว",
+    "auth/invalid-email":"รูปแบบอีเมลไม่ถูกต้อง",
+    "auth/weak-password":"รหัสผ่านไม่ปลอดภัย",
+    "auth/user-not-found":"ไม่พบบัญชีนี้",
+    "auth/wrong-password":"รหัสผ่านไม่ถูกต้อง",
+    "auth/invalid-credential":"อีเมลหรือรหัสผ่านไม่ถูกต้อง",
+    "auth/too-many-requests":"ลองหลายครั้งเกินไป กรุณารอสักครู่",
+    "auth/network-request-failed":"เชื่อมต่ออินเทอร์เน็ตไม่ได้"
+  };
+  return messages[e.code] || ("เกิดข้อผิดพลาด: " + e.message);
+}
+
+// สมัครสมาชิก
 $("registerBtn").addEventListener("click", async () => {
   if (busy) return;
 
@@ -429,14 +465,12 @@ $("registerBtn").addEventListener("click", async () => {
   const password = $("password").value;
 
   if (!email || !password) {
-    showMessage("authMessage",
-      "กรุณากรอกอีเมลและรหัสผ่าน", true);
+    showMessage("authMessage","กรุณากรอกอีเมลและรหัสผ่าน",true);
     return;
   }
 
   if (password.length < 6) {
-    showMessage("authMessage",
-      "รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร", true);
+    showMessage("authMessage","รหัสผ่านต้องมีอย่างน้อย 6 ตัว",true);
     return;
   }
 
@@ -444,18 +478,17 @@ $("registerBtn").addEventListener("click", async () => {
   $("registerBtn").disabled = true;
 
   try {
-    await auth.createUserWithEmailAndPassword(email, password);
-    showMessage("authMessage", "สมัครสมาชิกสำเร็จ!");
+    await auth.createUserWithEmailAndPassword(email,password);
   } catch (e) {
-    showMessage("authMessage", authError(e), true);
+    showMessage("authMessage",authError(e),true);
   } finally {
     busy = false;
     $("registerBtn").disabled = false;
   }
 });
 
-/* เข้าสู่ระบบ */
-$("loginForm").addEventListener("submit", async e => {
+// เข้าสู่ระบบ
+$("loginForm").addEventListener("submit",async e => {
   e.preventDefault();
   if (busy) return;
 
@@ -468,49 +501,152 @@ $("loginForm").addEventListener("submit", async e => {
       $("password").value
     );
   } catch (e) {
-    showMessage("authMessage", authError(e), true);
+    showMessage("authMessage",authError(e),true);
   } finally {
     busy = false;
     $("loginBtn").disabled = false;
   }
 });
 
-/* รีเซ็ตรหัสผ่าน */
-$("resetBtn").addEventListener("click", async () => {
+// ลืมรหัสผ่าน
+$("resetBtn").addEventListener("click",async () => {
   const email = $("email").value.trim();
 
   if (!email) {
-    showMessage("authMessage",
-      "กรุณากรอกอีเมลก่อนกดลืมรหัสผ่าน", true);
+    showMessage("authMessage","กรุณากรอกอีเมลก่อน",true);
     return;
   }
 
   try {
     await auth.sendPasswordResetEmail(email);
-    showMessage("authMessage",
-      "ส่งลิงก์รีเซ็ตรหัสผ่านไปยังอีเมลแล้ว กรุณาตรวจสอบกล่องจดหมาย");
+    showMessage("authMessage","ส่งลิงก์รีเซ็ตรหัสผ่านแล้ว");
   } catch (e) {
-    showMessage("authMessage", authError(e), true);
+    showMessage("authMessage",authError(e),true);
   }
 });
 
-function authError(e) {
-  const messages = {
-    "auth/email-already-in-use":"อีเมลนี้สมัครสมาชิกแล้ว",
-    "auth/invalid-email":"รูปแบบอีเมลไม่ถูกต้อง",
-    "auth/weak-password":"รหัสผ่านไม่ปลอดภัย กรุณาใช้รหัสผ่านที่ยาวขึ้น",
-    "auth/user-not-found":"ไม่พบบัญชีนี้ กรุณาสมัครสมาชิกก่อน",
-    "auth/wrong-password":"รหัสผ่านไม่ถูกต้อง",
-    "auth/invalid-credential":"อีเมลหรือรหัสผ่านไม่ถูกต้อง",
-    "auth/too-many-requests":"ลองหลายครั้งเกินไป กรุณารอสักครู่",
-    "auth/network-request-failed":"เชื่อมต่ออินเทอร์เน็ตไม่ได้"
-  };
+// Push Notification
+async function setupPushNotifications() {
+  if (!currentUser) throw new Error("กรุณาเข้าสู่ระบบ");
 
-  return messages[e.code] || ("เกิดข้อผิดพลาด: " + e.message);
+  if (!window.isSecureContext) {
+    throw new Error("ต้องเปิดเว็บไซต์ผ่าน HTTPS");
+  }
+
+  if (!("Notification" in window) ||
+      !("serviceWorker" in navigator)) {
+    throw new Error("เบราว์เซอร์ไม่รองรับการแจ้งเตือน");
+  }
+
+  if (!(await firebase.messaging.isSupported())) {
+    throw new Error("อุปกรณ์นี้ไม่รองรับ Firebase Messaging");
+  }
+
+  if (!VAPID_KEY || VAPID_KEY.includes("ใส่_")) {
+    throw new Error("ยังไม่ได้ใส่ VAPID Public Key");
+  }
+
+  const permission = await Notification.requestPermission();
+
+  if (permission !== "granted") {
+    throw new Error("คุณยังไม่ได้อนุญาตการแจ้งเตือน");
+  }
+
+  messaging = firebase.messaging();
+
+  pushRegistration = await navigator.serviceWorker.register(
+    "./firebase-messaging-sw.js"
+  );
+
+  await navigator.serviceWorker.ready;
+
+  const token = await messaging.getToken({
+    vapidKey: VAPID_KEY,
+    serviceWorkerRegistration: pushRegistration
+  });
+
+  if (!token) {
+    throw new Error("สร้าง Notification Token ไม่สำเร็จ");
+  }
+
+  await getTokenRef(token).set({
+    token,
+    platform: "web",
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  },{merge:true});
+
+  pushToken = token;
+
+  localStorage.setItem(
+    "myHomeworkPush_" + currentUser.uid,
+    "enabled"
+  );
+
+  $("enablePushBtn").textContent = "เปิดรับการแจ้งเตือนแล้ว";
+
+  showMessage("pushMessage","เปิดรับการแจ้งเตือนเรียบร้อยแล้ว");
 }
 
-/* ออกจากระบบ */
-$("logoutBtn").addEventListener("click", async () => {
+// กดเปิดแจ้งเตือน
+$("enablePushBtn").addEventListener("click",async () => {
+  const btn = $("enablePushBtn");
+  btn.disabled = true;
+
+  try {
+    await setupPushNotifications();
+  } catch (e) {
+    showMessage("pushMessage",e.message,true);
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+// ข้อความขณะเปิดเว็บ
+async function setupForegroundMessages() {
+  try {
+    if (!(await firebase.messaging.isSupported())) return;
+
+    messaging = firebase.messaging();
+
+    messaging.onMessage(async payload => {
+      const title =
+        payload.notification?.title || "My Homework";
+
+      const body =
+        payload.notification?.body || "มีการแจ้งเตือนการบ้าน";
+
+      if (Notification.permission === "granted") {
+        const registration =
+          await navigator.serviceWorker.ready;
+
+        await registration.showNotification(title,{
+          body,
+          icon:"./icon-192.png"
+        });
+      }
+    });
+  } catch (e) {
+    console.error("Foreground messaging:",e);
+  }
+}
+
+setupForegroundMessages();
+
+// ลบบัญชีอุปกรณ์ออกจากรายการแจ้งเตือนก่อนออกจากระบบ
+async function removePushToken() {
+  if (!currentUser || !pushToken) return;
+
+  try {
+    await getTokenRef(pushToken).delete();
+  } catch (e) {
+    console.error("Remove push token:",e);
+  }
+
+  pushToken = null;
+}
+
+// ออกจากระบบ
+$("logoutBtn").addEventListener("click",async () => {
   if (!confirm("ต้องการออกจากระบบใช่ไหม?")) return;
 
   if (unsubscribeTasks) {
@@ -518,10 +654,11 @@ $("logoutBtn").addEventListener("click", async () => {
     unsubscribeTasks = null;
   }
 
+  await removePushToken();
   await auth.signOut();
 });
 
-/* ตรวจสอบบัญชี */
+// ตรวจสอบบัญชี
 auth.onAuthStateChanged(async user => {
   if (unsubscribeTasks) {
     unsubscribeTasks();
@@ -530,12 +667,21 @@ auth.onAuthStateChanged(async user => {
 
   currentUser = user;
   tasks = [];
+  pushToken = null;
 
   if (user) {
     $("loginView").classList.add("hidden");
     $("appView").classList.remove("hidden");
     $("userEmail").textContent = user.email || "บัญชีของฉัน";
     $("assigned").value = todayString();
+
+    if (Notification.permission === "granted") {
+      try {
+        await setupPushNotifications();
+      } catch (e) {
+        showMessage("pushMessage",e.message,true);
+      }
+    }
 
     await loadTasks();
   } else {
@@ -546,15 +692,13 @@ auth.onAuthStateChanged(async user => {
   }
 });
 
-/* โหลดข้อมูลจาก Firestore */
+// โหลดข้อมูล
 async function loadTasks() {
   $("taskList").innerHTML =
     '<div class="empty">กำลังโหลดข้อมูล...</div>';
 
   try {
     const ref = getTasksRef();
-
-    // ตรวจสอบรายการเดิมในเครื่องก่อนนำเข้า
     const snapshot = await ref.get();
 
     if (snapshot.empty) {
@@ -568,9 +712,8 @@ async function loadTasks() {
         ...doc.data(),
         id: doc.id
       }));
-
       render();
-    }, error => {
+    },error => {
       $("taskList").innerHTML =
         '<div class="empty">โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่</div>';
       console.error(error);
@@ -583,7 +726,7 @@ async function loadTasks() {
   }
 }
 
-/* นำเข้ารายการเก่าจากเครื่อง */
+// นำเข้าข้อมูลเก่า
 async function offerLocalMigration(ref) {
   const marker = "myHomeworkMigrated_" + currentUser.uid;
 
@@ -595,7 +738,6 @@ async function offerLocalMigration(ref) {
     oldTasks = JSON.parse(
       localStorage.getItem("myHomework") || "[]"
     );
-
     if (!Array.isArray(oldTasks)) oldTasks = [];
   } catch {
     oldTasks = [];
@@ -605,61 +747,64 @@ async function offerLocalMigration(ref) {
 
   const confirmImport = confirm(
     "พบการบ้านเดิมในมือถือจำนวน " + oldTasks.length +
-    " งาน\n\nต้องการนำเข้าการบ้านเหล่านี้เข้าบัญชีนี้หรือไม่?\n\n" +
-    "โปรดตรวจสอบว่าเป็นการบ้านของบัญชีคุณเอง"
+    " งาน ต้องการนำเข้าบัญชีนี้หรือไม่?"
   );
 
   if (!confirmImport) return;
 
   try {
-    const batch = db.batch();
+    // Firestore batch จำกัด 500 writes ต่อชุด
+    for (let i=0;i<oldTasks.length;i+=450) {
+      const batch = db.batch();
 
-    oldTasks.forEach(task => {
-      const id = String(task.id || Date.now() + Math.random());
+      oldTasks.slice(i,i+450).forEach(task => {
+        const id = String(task.id || (
+          Date.now() + "-" + Math.random().toString(36).slice(2)
+        ));
 
-      const docRef = ref.doc(id);
-
-      batch.set(docRef, {
-        subject: String(task.subject || ""),
-        title: String(task.title || ""),
-        detail: String(task.detail || ""),
-        assigned: String(task.assigned || ""),
-        due: String(task.due || ""),
-        done: Boolean(task.done)
+        batch.set(ref.doc(id),{
+          subject:String(task.subject || ""),
+          title:String(task.title || ""),
+          detail:String(task.detail || ""),
+          assigned:String(task.assigned || ""),
+          due:String(task.due || ""),
+          done:Boolean(task.done)
+        });
       });
-    });
 
-    await batch.commit();
+      await batch.commit();
+    }
 
-    // เก็บ Local Storage เดิมไว้เป็นข้อมูลสำรอง
-    localStorage.setItem(marker, "done");
-
+    localStorage.setItem(marker,"done");
     alert("นำเข้าการบ้านเดิมสำเร็จแล้ว!");
   } catch (e) {
     alert("นำเข้าข้อมูลไม่สำเร็จ: " + e.message);
   }
 }
 
-/* เพิ่มหรือแก้ไขงาน */
-$("homeworkForm").addEventListener("submit", async e => {
+// เพิ่มหรือแก้ไขงาน
+$("homeworkForm").addEventListener("submit",async e => {
   e.preventDefault();
-
   if (!currentUser) return;
 
   const id = $("editId").value;
-
-  const oldTask = id
-    ? tasks.find(t => t.id === id)
-    : null;
+  const oldTask = id ? tasks.find(t => t.id === id) : null;
 
   const task = {
-    subject: $("subject").value.trim(),
-    title: $("title").value.trim(),
-    detail: $("detail").value.trim(),
-    assigned: $("assigned").value,
-    due: $("due").value,
-    done: oldTask ? Boolean(oldTask.done) : false
+    subject:$("subject").value.trim(),
+    title:$("title").value.trim(),
+    detail:$("detail").value.trim(),
+    assigned:$("assigned").value,
+    due:$("due").value,
+    done:oldTask ? Boolean(oldTask.done) : false
   };
+
+  if (!task.subject || !task.title) return;
+
+  if (task.due && task.due < task.assigned) {
+    alert("วันกำหนดส่งไม่ควรอยู่ก่อนวันที่ครูสั่ง");
+    return;
+  }
 
   $("saveBtn").disabled = true;
 
@@ -669,10 +814,9 @@ $("homeworkForm").addEventListener("submit", async e => {
     } else {
       await getTasksRef().add(task);
     }
-
     resetForm();
   } catch (e) {
-    alert("บันทึกไม่สำเร็จ กรุณาลองใหม่\n" + e.message);
+    alert("บันทึกไม่สำเร็จ: " + e.message);
   } finally {
     $("saveBtn").disabled = false;
   }
@@ -687,19 +831,19 @@ function resetForm() {
   $("cancelBtn").style.display = "none";
 }
 
-$("cancelBtn").addEventListener("click", resetForm);
+$("cancelBtn").addEventListener("click",resetForm);
 
-/* แก้ไขงาน */
+// แก้ไขงาน
 window.editTask = function(id) {
   const t = tasks.find(x => x.id === id);
   if (!t) return;
 
   $("editId").value = t.id;
-  $("subject").value = t.subject;
-  $("title").value = t.title;
-  $("detail").value = t.detail;
-  $("assigned").value = t.assigned;
-  $("due").value = t.due;
+  $("subject").value = t.subject || "";
+  $("title").value = t.title || "";
+  $("detail").value = t.detail || "";
+  $("assigned").value = t.assigned || "";
+  $("due").value = t.due || "";
 
   $("formTitle").textContent = "🖊️ แก้ไขงาน";
   $("saveBtn").textContent = "บันทึกการแก้ไข";
@@ -708,21 +852,21 @@ window.editTask = function(id) {
   window.scrollTo({top:0,behavior:"smooth"});
 };
 
-/* ทำเครื่องหมายเสร็จ */
+// ทำเครื่องหมายเสร็จ
 window.toggleTask = async function(id) {
   const t = tasks.find(x => x.id === id);
   if (!t) return;
 
   try {
     await getTasksRef().doc(id).update({
-      done: !t.done
+      done:!t.done
     });
   } catch (e) {
     alert("เปลี่ยนสถานะไม่สำเร็จ: " + e.message);
   }
 };
 
-/* ลบงาน */
+// ลบงาน
 window.deleteTask = async function(id) {
   if (!confirm("ต้องการลบงานนี้ใช่ไหม?")) return;
 
@@ -734,7 +878,7 @@ window.deleteTask = async function(id) {
 };
 
 function escapeHTML(value) {
-  return String(value ?? "").replace(/[&<>"']/g, c => ({
+  return String(value ?? "").replace(/[&<>"']/g,c => ({
     "&":"&amp;",
     "<":"&lt;",
     ">":"&gt;",
@@ -743,15 +887,11 @@ function escapeHTML(value) {
   })[c]);
 }
 
-/* แสดงรายการงาน */
+// แสดงรายการงาน
 function render() {
   $("total").textContent = tasks.length;
-
-  $("pending").textContent =
-    tasks.filter(t => !t.done).length;
-
-  $("finished").textContent =
-    tasks.filter(t => t.done).length;
+  $("pending").textContent = tasks.filter(t => !t.done).length;
+  $("finished").textContent = tasks.filter(t => t.done).length;
 
   const filtered = tasks.filter(t => {
     if (currentFilter === "pending") return !t.done;
@@ -780,9 +920,7 @@ function render() {
         <span>${t.done ? "✅" : "📌"}</span>
       </div>
 
-      ${t.detail
-        ? `<p>${escapeHTML(t.detail)}</p>`
-        : ""}
+      ${t.detail ? `<p>${escapeHTML(t.detail)}</p>` : ""}
 
       <p>📅 วันที่สั่ง: ${formatDate(t.assigned)}</p>
       <div class="due">⏰ กำหนดส่ง: ${formatDate(t.due)}</div>
@@ -807,10 +945,10 @@ function render() {
   `).join("");
 }
 
-/* ตัวกรอง */
+// ตัวกรอง
 document.querySelectorAll(".filters button")
 .forEach(button => {
-  button.addEventListener("click", () => {
+  button.addEventListener("click",() => {
     currentFilter = button.dataset.filter;
 
     document.querySelectorAll(".filters button")
