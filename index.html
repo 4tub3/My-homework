@@ -4,7 +4,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#eaf6ee">
 <title>My Homework | สมุดจดงาน</title>
+
 <style>
 :root {
   --green:#39865b;
@@ -12,7 +14,6 @@
   --bg:#f5f9f5;
   --text:#263b2e;
   --muted:#819087;
-  --white:#fff;
 }
 * {box-sizing:border-box}
 body {
@@ -34,22 +35,7 @@ header {
 header h1 {margin:0;font-size:27px}
 header p {margin:8px 0 0;opacity:.9}
 .container {padding:18px 15px 40px}
-.date {color:var(--muted);font-size:14px;margin-bottom:15px}
-.stats {
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:10px;
-  margin-bottom:20px;
-}
-.stat {
-  background:white;
-  padding:15px 8px;
-  border-radius:16px;
-  text-align:center;
-  box-shadow:0 3px 12px #244c3010;
-}
-.stat strong {display:block;font-size:25px;color:var(--green)}
-.stat span {font-size:12px;color:var(--muted)}
+.hidden {display:none!important}
 .panel {
   background:white;
   padding:18px;
@@ -72,17 +58,12 @@ input,select,textarea {
   background:#fbfdfb;
   color:var(--text);
   font:inherit;
-  outline:none;
 }
 input:focus,select:focus,textarea:focus {
+  outline:none;
   border-color:var(--green);
 }
 textarea {resize:vertical;min-height:75px}
-.two {
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-}
 button {
   border:0;
   border-radius:11px;
@@ -91,11 +72,66 @@ button {
   font-weight:bold;
   cursor:pointer;
 }
+button:disabled {opacity:.5;cursor:not-allowed}
 .primary {
   width:100%;
   margin-top:16px;
   background:var(--green);
   color:white;
+}
+.secondary {
+  background:#e7f1e9;
+  color:#397b50;
+}
+.danger {
+  background:#fff0ed;
+  color:#bb5c50;
+}
+.message {
+  font-size:13px;
+  padding:11px;
+  border-radius:10px;
+  margin-top:12px;
+  background:#edf5ef;
+  color:#397b50;
+  white-space:pre-wrap;
+}
+.message.error {
+  background:#fff0ed;
+  color:#b44b43;
+}
+.account {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+  font-size:13px;
+}
+.date {color:var(--muted);font-size:14px;margin-bottom:15px}
+.stats {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-bottom:20px;
+}
+.stat {
+  background:white;
+  padding:15px 8px;
+  border-radius:16px;
+  text-align:center;
+  box-shadow:0 3px 12px #244c3010;
+}
+.stat strong {
+  display:block;
+  font-size:25px;
+  color:var(--green);
+}
+.stat span {font-size:12px;color:var(--muted)}
+.two {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
 }
 .filters {
   display:flex;
@@ -172,6 +208,7 @@ footer {
 }
 </style>
 </head>
+
 <body>
 
 <header>
@@ -182,94 +219,180 @@ footer {
 </header>
 
 <main class="container">
-  <div class="date" id="today"></div>
 
-  <section class="stats">
-    <div class="stat">
-      <strong id="total">0</strong>
-      <span>งานทั้งหมด</span>
-    </div>
-    <div class="stat">
-      <strong id="pending">0</strong>
-      <span>ยังไม่เสร็จ</span>
-    </div>
-    <div class="stat">
-      <strong id="finished">0</strong>
-      <span>เสร็จแล้ว</span>
-    </div>
-  </section>
+  <!-- LOGIN -->
+  <section id="loginView" class="panel">
+    <h2>🔐 เข้าสู่ระบบ My Homework</h2>
+    <p style="font-size:13px;color:#819087">
+      ใช้อีเมลและรหัสผ่านของตัวเอง
+    </p>
 
-  <section class="panel">
-    <h2 id="formTitle">✏️ เพิ่มงานใหม่</h2>
+    <form id="loginForm">
+      <label for="email">อีเมล</label>
+      <input id="email" type="email"
+        placeholder="example@gmail.com" required>
 
-    <form id="homeworkForm">
-      <input type="hidden" id="editId">
+      <label for="password">รหัสผ่าน</label>
+      <input id="password" type="password"
+        placeholder="รหัสผ่านอย่างน้อย 6 ตัว" required>
 
-      <label for="subject">วิชา</label>
-      <input id="subject" placeholder="เช่น คณิตศาสตร์" required>
-
-      <label for="title">ชื่องาน / สิ่งที่ครูสั่ง</label>
-      <input id="title" placeholder="เช่น ทำแบบฝึกหัดหน้า 25" required>
-
-      <label for="detail">รายละเอียดเพิ่มเติม</label>
-      <textarea id="detail" placeholder="เช่น ทำข้อ 1-10 ส่งในสมุด"></textarea>
-
-      <div class="two">
-        <div>
-          <label for="assigned">วันที่ครูสั่ง</label>
-          <input type="date" id="assigned" required>
-        </div>
-        <div>
-          <label for="due">วันกำหนดส่ง</label>
-          <input type="date" id="due">
-        </div>
-      </div>
-
-      <button class="primary" type="submit" id="saveBtn">
-        + บันทึกงาน
-      </button>
-      <button type="button" id="cancelBtn"
-        style="display:none;width:100%;margin-top:8px;background:#eee;color:#555">
-        ยกเลิกการแก้ไข
+      <button class="primary" id="loginBtn" type="submit">
+        เข้าสู่ระบบ
       </button>
     </form>
+
+    <button class="secondary" id="registerBtn"
+      style="width:100%;margin-top:10px">
+      สมัครสมาชิกใหม่
+    </button>
+
+    <button class="secondary" id="resetBtn"
+      style="width:100%;margin-top:10px">
+      ลืมรหัสผ่าน?
+    </button>
+
+    <div id="authMessage" class="message hidden"></div>
   </section>
 
-  <section>
-    <h2>📝 รายการงานของฉัน</h2>
+  <!-- APP -->
+  <section id="appView" class="hidden">
 
-    <div class="filters">
-      <button class="active" data-filter="all">ทั้งหมด</button>
-      <button data-filter="pending">ยังไม่เสร็จ</button>
-      <button data-filter="done">เสร็จแล้ว</button>
-    </div>
+    <section class="panel account">
+      <div>
+        <strong>👤 บัญชีของฉัน</strong>
+        <div id="userEmail"
+          style="color:#819087;margin-top:5px"></div>
+      </div>
+      <button id="logoutBtn" class="danger">
+        ออกจากระบบ
+      </button>
+    </section>
 
-    <div id="taskList"></div>
+    <div id="today" class="date"></div>
+
+    <section class="stats">
+      <div class="stat">
+        <strong id="total">0</strong>
+        <span>งานทั้งหมด</span>
+      </div>
+      <div class="stat">
+        <strong id="pending">0</strong>
+        <span>ยังไม่เสร็จ</span>
+      </div>
+      <div class="stat">
+        <strong id="finished">0</strong>
+        <span>เสร็จแล้ว</span>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2 id="formTitle">✏️ เพิ่มงานใหม่</h2>
+
+      <form id="homeworkForm">
+        <input type="hidden" id="editId">
+
+        <label for="subject">วิชา</label>
+        <input id="subject"
+          placeholder="เช่น คณิตศาสตร์" required>
+
+        <label for="title">ชื่องาน / สิ่งที่ครูสั่ง</label>
+        <input id="title"
+          placeholder="เช่น ทำแบบฝึกหัดหน้า 25" required>
+
+        <label for="detail">รายละเอียดเพิ่มเติม</label>
+        <textarea id="detail"
+          placeholder="เช่น ทำข้อ 1-10 ส่งในสมุด"></textarea>
+
+        <div class="two">
+          <div>
+            <label for="assigned">วันที่ครูสั่ง</label>
+            <input type="date" id="assigned" required>
+          </div>
+          <div>
+            <label for="due">วันกำหนดส่ง</label>
+            <input type="date" id="due">
+          </div>
+        </div>
+
+        <button class="primary" type="submit" id="saveBtn">
+          + บันทึกงาน
+        </button>
+
+        <button type="button" id="cancelBtn"
+          style="display:none;width:100%;margin-top:8px;background:#eee;color:#555">
+          ยกเลิกการแก้ไข
+        </button>
+      </form>
+    </section>
+
+    <section>
+      <h2>📝 รายการงานของฉัน</h2>
+
+      <div class="filters">
+        <button class="active" data-filter="all">ทั้งหมด</button>
+        <button data-filter="pending">ยังไม่เสร็จ</button>
+        <button data-filter="done">เสร็จแล้ว</button>
+      </div>
+
+      <div id="taskList">
+        <div class="empty">กำลังโหลดข้อมูล...</div>
+      </div>
+    </section>
+
   </section>
 
   <footer>My Homework • จัดการงานให้เป็นระเบียบ 🌱</footer>
 </main>
 
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+
 <script>
 const $ = id => document.getElementById(id);
 
+/* Firebase Configuration */
+const firebaseConfig = {
+  apiKey: "AIzaSyAoRGRHb0qZPvCfZUCFK8op0p0DH-UXb6I",
+  authDomain: "my-homework-5919f.firebaseapp.com",
+  projectId: "my-homework-5919f",
+  storageBucket: "my-homework-5919f.firebasestorage.app",
+  messagingSenderId: "394792880053",
+  appId: "1:394792880053:web:ae5e1416c5313920acfbfc",
+  measurementId: "G-N38DG713WM"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+let currentUser = null;
 let tasks = [];
 let currentFilter = "all";
+let unsubscribeTasks = null;
+let busy = false;
 
-try {
-  tasks = JSON.parse(
-    localStorage.getItem("myHomework") || "[]"
-  );
-  if (!Array.isArray(tasks)) tasks = [];
-} catch {
-  tasks = [];
+function showMessage(id, message, error = false) {
+  const el = $(id);
+  el.textContent = message;
+  el.classList.remove("hidden", "error");
+  if (error) el.classList.add("error");
 }
 
-function save() {
-  localStorage.setItem("myHomework", JSON.stringify(tasks));
-  render();
+function hideMessage(id) {
+  $(id).classList.add("hidden");
 }
 
+function getTasksRef() {
+  if (!currentUser) throw new Error("กรุณาเข้าสู่ระบบ");
+  return db.collection("users")
+    .doc(currentUser.uid)
+    .collection("tasks");
+}
+
+/* วันที่ */
 function todayString() {
   const d = new Date();
   const local = new Date(
@@ -298,34 +421,261 @@ function formatDate(date) {
   });
 }
 
-$("assigned").value = todayString();
+/* สมัครสมาชิก */
+$("registerBtn").addEventListener("click", async () => {
+  if (busy) return;
 
-$("homeworkForm").addEventListener("submit", function(e) {
+  const email = $("email").value.trim();
+  const password = $("password").value;
+
+  if (!email || !password) {
+    showMessage("authMessage",
+      "กรุณากรอกอีเมลและรหัสผ่าน", true);
+    return;
+  }
+
+  if (password.length < 6) {
+    showMessage("authMessage",
+      "รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร", true);
+    return;
+  }
+
+  busy = true;
+  $("registerBtn").disabled = true;
+
+  try {
+    await auth.createUserWithEmailAndPassword(email, password);
+    showMessage("authMessage", "สมัครสมาชิกสำเร็จ!");
+  } catch (e) {
+    showMessage("authMessage", authError(e), true);
+  } finally {
+    busy = false;
+    $("registerBtn").disabled = false;
+  }
+});
+
+/* เข้าสู่ระบบ */
+$("loginForm").addEventListener("submit", async e => {
   e.preventDefault();
+  if (busy) return;
+
+  busy = true;
+  $("loginBtn").disabled = true;
+
+  try {
+    await auth.signInWithEmailAndPassword(
+      $("email").value.trim(),
+      $("password").value
+    );
+  } catch (e) {
+    showMessage("authMessage", authError(e), true);
+  } finally {
+    busy = false;
+    $("loginBtn").disabled = false;
+  }
+});
+
+/* รีเซ็ตรหัสผ่าน */
+$("resetBtn").addEventListener("click", async () => {
+  const email = $("email").value.trim();
+
+  if (!email) {
+    showMessage("authMessage",
+      "กรุณากรอกอีเมลก่อนกดลืมรหัสผ่าน", true);
+    return;
+  }
+
+  try {
+    await auth.sendPasswordResetEmail(email);
+    showMessage("authMessage",
+      "ส่งลิงก์รีเซ็ตรหัสผ่านไปยังอีเมลแล้ว กรุณาตรวจสอบกล่องจดหมาย");
+  } catch (e) {
+    showMessage("authMessage", authError(e), true);
+  }
+});
+
+function authError(e) {
+  const messages = {
+    "auth/email-already-in-use":"อีเมลนี้สมัครสมาชิกแล้ว",
+    "auth/invalid-email":"รูปแบบอีเมลไม่ถูกต้อง",
+    "auth/weak-password":"รหัสผ่านไม่ปลอดภัย กรุณาใช้รหัสผ่านที่ยาวขึ้น",
+    "auth/user-not-found":"ไม่พบบัญชีนี้ กรุณาสมัครสมาชิกก่อน",
+    "auth/wrong-password":"รหัสผ่านไม่ถูกต้อง",
+    "auth/invalid-credential":"อีเมลหรือรหัสผ่านไม่ถูกต้อง",
+    "auth/too-many-requests":"ลองหลายครั้งเกินไป กรุณารอสักครู่",
+    "auth/network-request-failed":"เชื่อมต่ออินเทอร์เน็ตไม่ได้"
+  };
+
+  return messages[e.code] || ("เกิดข้อผิดพลาด: " + e.message);
+}
+
+/* ออกจากระบบ */
+$("logoutBtn").addEventListener("click", async () => {
+  if (!confirm("ต้องการออกจากระบบใช่ไหม?")) return;
+
+  if (unsubscribeTasks) {
+    unsubscribeTasks();
+    unsubscribeTasks = null;
+  }
+
+  await auth.signOut();
+});
+
+/* ตรวจสอบบัญชี */
+auth.onAuthStateChanged(async user => {
+  if (unsubscribeTasks) {
+    unsubscribeTasks();
+    unsubscribeTasks = null;
+  }
+
+  currentUser = user;
+  tasks = [];
+
+  if (user) {
+    $("loginView").classList.add("hidden");
+    $("appView").classList.remove("hidden");
+    $("userEmail").textContent = user.email || "บัญชีของฉัน";
+    $("assigned").value = todayString();
+
+    await loadTasks();
+  } else {
+    $("appView").classList.add("hidden");
+    $("loginView").classList.remove("hidden");
+    $("taskList").innerHTML = "";
+    hideMessage("authMessage");
+  }
+});
+
+/* โหลดข้อมูลจาก Firestore */
+async function loadTasks() {
+  $("taskList").innerHTML =
+    '<div class="empty">กำลังโหลดข้อมูล...</div>';
+
+  try {
+    const ref = getTasksRef();
+
+    // ตรวจสอบรายการเดิมในเครื่องก่อนนำเข้า
+    const snapshot = await ref.get();
+
+    if (snapshot.empty) {
+      await offerLocalMigration(ref);
+    }
+
+    if (!currentUser) return;
+
+    unsubscribeTasks = ref.onSnapshot(snapshot => {
+      tasks = snapshot.docs.map(doc => ({
+        ...doc.data(),
+        id: doc.id
+      }));
+
+      render();
+    }, error => {
+      $("taskList").innerHTML =
+        '<div class="empty">โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่</div>';
+      console.error(error);
+    });
+
+  } catch (e) {
+    $("taskList").innerHTML =
+      '<div class="empty">เกิดข้อผิดพลาดในการโหลดข้อมูล</div>';
+    console.error(e);
+  }
+}
+
+/* นำเข้ารายการเก่าจากเครื่อง */
+async function offerLocalMigration(ref) {
+  const marker = "myHomeworkMigrated_" + currentUser.uid;
+
+  if (localStorage.getItem(marker)) return;
+
+  let oldTasks = [];
+
+  try {
+    oldTasks = JSON.parse(
+      localStorage.getItem("myHomework") || "[]"
+    );
+
+    if (!Array.isArray(oldTasks)) oldTasks = [];
+  } catch {
+    oldTasks = [];
+  }
+
+  if (!oldTasks.length) return;
+
+  const confirmImport = confirm(
+    "พบการบ้านเดิมในมือถือจำนวน " + oldTasks.length +
+    " งาน\n\nต้องการนำเข้าการบ้านเหล่านี้เข้าบัญชีนี้หรือไม่?\n\n" +
+    "โปรดตรวจสอบว่าเป็นการบ้านของบัญชีคุณเอง"
+  );
+
+  if (!confirmImport) return;
+
+  try {
+    const batch = db.batch();
+
+    oldTasks.forEach(task => {
+      const id = String(task.id || Date.now() + Math.random());
+
+      const docRef = ref.doc(id);
+
+      batch.set(docRef, {
+        subject: String(task.subject || ""),
+        title: String(task.title || ""),
+        detail: String(task.detail || ""),
+        assigned: String(task.assigned || ""),
+        due: String(task.due || ""),
+        done: Boolean(task.done)
+      });
+    });
+
+    await batch.commit();
+
+    // เก็บ Local Storage เดิมไว้เป็นข้อมูลสำรอง
+    localStorage.setItem(marker, "done");
+
+    alert("นำเข้าการบ้านเดิมสำเร็จแล้ว!");
+  } catch (e) {
+    alert("นำเข้าข้อมูลไม่สำเร็จ: " + e.message);
+  }
+}
+
+/* เพิ่มหรือแก้ไขงาน */
+$("homeworkForm").addEventListener("submit", async e => {
+  e.preventDefault();
+
+  if (!currentUser) return;
 
   const id = $("editId").value;
 
+  const oldTask = id
+    ? tasks.find(t => t.id === id)
+    : null;
+
   const task = {
-    id: id || String(Date.now()),
     subject: $("subject").value.trim(),
     title: $("title").value.trim(),
     detail: $("detail").value.trim(),
     assigned: $("assigned").value,
     due: $("due").value,
-    done: id
-      ? !!tasks.find(t => t.id === id)?.done
-      : false
+    done: oldTask ? Boolean(oldTask.done) : false
   };
 
-  if (id) {
-    const index = tasks.findIndex(t => t.id === id);
-    if (index !== -1) tasks[index] = task;
-  } else {
-    tasks.unshift(task);
-  }
+  $("saveBtn").disabled = true;
 
-  resetForm();
-  save();
+  try {
+    if (id) {
+      await getTasksRef().doc(id).update(task);
+    } else {
+      await getTasksRef().add(task);
+    }
+
+    resetForm();
+  } catch (e) {
+    alert("บันทึกไม่สำเร็จ กรุณาลองใหม่\n" + e.message);
+  } finally {
+    $("saveBtn").disabled = false;
+  }
 });
 
 function resetForm() {
@@ -339,7 +689,8 @@ function resetForm() {
 
 $("cancelBtn").addEventListener("click", resetForm);
 
-function editTask(id) {
+/* แก้ไขงาน */
+window.editTask = function(id) {
   const t = tasks.find(x => x.id === id);
   if (!t) return;
 
@@ -355,20 +706,32 @@ function editTask(id) {
   $("cancelBtn").style.display = "block";
 
   window.scrollTo({top:0,behavior:"smooth"});
-}
+};
 
-function toggleTask(id) {
+/* ทำเครื่องหมายเสร็จ */
+window.toggleTask = async function(id) {
   const t = tasks.find(x => x.id === id);
   if (!t) return;
-  t.done = !t.done;
-  save();
-}
 
-function deleteTask(id) {
+  try {
+    await getTasksRef().doc(id).update({
+      done: !t.done
+    });
+  } catch (e) {
+    alert("เปลี่ยนสถานะไม่สำเร็จ: " + e.message);
+  }
+};
+
+/* ลบงาน */
+window.deleteTask = async function(id) {
   if (!confirm("ต้องการลบงานนี้ใช่ไหม?")) return;
-  tasks = tasks.filter(t => t.id !== id);
-  save();
-}
+
+  try {
+    await getTasksRef().doc(id).delete();
+  } catch (e) {
+    alert("ลบงานไม่สำเร็จ: " + e.message);
+  }
+};
 
 function escapeHTML(value) {
   return String(value ?? "").replace(/[&<>"']/g, c => ({
@@ -380,10 +743,13 @@ function escapeHTML(value) {
   })[c]);
 }
 
+/* แสดงรายการงาน */
 function render() {
   $("total").textContent = tasks.length;
+
   $("pending").textContent =
     tasks.filter(t => !t.done).length;
+
   $("finished").textContent =
     tasks.filter(t => t.done).length;
 
@@ -398,7 +764,7 @@ function render() {
     return a.due.localeCompare(b.due);
   });
 
-  if (filtered.length === 0) {
+  if (!filtered.length) {
     $("taskList").innerHTML =
       '<div class="empty">🌱 ยังไม่มีรายการงานในหมวดนี้</div>';
     return;
@@ -423,17 +789,17 @@ function render() {
 
       <div class="actions">
         <button class="complete"
-          onclick="toggleTask('${t.id}')">
+          onclick="toggleTask('${escapeHTML(t.id)}')">
           ${t.done ? "↩ ทำอีกครั้ง" : "✓ เสร็จแล้ว"}
         </button>
 
         <button class="edit"
-          onclick="editTask('${t.id}')">
+          onclick="editTask('${escapeHTML(t.id)}')">
           ✎ แก้ไข
         </button>
 
         <button class="delete"
-          onclick="deleteTask('${t.id}')">
+          onclick="deleteTask('${escapeHTML(t.id)}')">
           🗑 ลบ
         </button>
       </div>
@@ -441,13 +807,14 @@ function render() {
   `).join("");
 }
 
+/* ตัวกรอง */
 document.querySelectorAll(".filters button")
 .forEach(button => {
   button.addEventListener("click", () => {
     currentFilter = button.dataset.filter;
 
     document.querySelectorAll(".filters button")
-    .forEach(b => b.classList.remove("active"));
+      .forEach(b => b.classList.remove("active"));
 
     button.classList.add("active");
     render();
@@ -455,7 +822,7 @@ document.querySelectorAll(".filters button")
 });
 
 showDate();
-render();
+$("assigned").value = todayString();
 </script>
 
 </body>
